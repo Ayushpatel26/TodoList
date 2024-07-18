@@ -1,5 +1,5 @@
 import Navbar from "./components/navbar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -8,6 +8,7 @@ function App() {
   const [todo, setTodo] = useState("")
   const [todos, setTodos] = useState([])
   const [showFinished, setShowFinished] = useState(true)
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     if (localStorage.getItem("todos")) {
@@ -68,6 +69,12 @@ function App() {
     saveToLS();
   }
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      buttonRef.current.click();
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -75,8 +82,8 @@ function App() {
         <h1 className="text-center font-extrabold min-[400px]:text-xl sm:text-2xl xl:text-3xl">iTask - manage your todos at one place</h1>
         <h2 className="min-[410px]:text-lg font-bold">Add a task</h2>
         <div className="addTodo flex justify-between max-sm:flex-col max-sm:gap-1">
-          <input onChange={handleChange} value={todo} type="text" name="Enter" id="" className="w-full rounded-lg px-3 py-1" />
-          <button onClick={handleAdd} disabled={todo.length < 3} className="bg-violet-500 hover:bg-violet-900 disabled:bg-violet-300 p-2 py-1 mx-5 rounded-md font-bold text-white max-sm:m-0">Save</button>
+          <input onKeyDown={handleKeyDown} onChange={handleChange} value={todo} type="text" name="Enter" id="" className="w-full rounded-lg px-3 py-1" />
+          <button ref={buttonRef} onClick={handleAdd} disabled={todo.length < 3} className="bg-violet-500 hover:bg-violet-900 disabled:bg-violet-300 p-2 py-1 mx-5 rounded-md font-bold text-white max-sm:m-0">Save</button>
         </div>
 
         <input onChange={toggleFinished} type="checkbox" className="text-xs mt-4" id="" checked={showFinished} />
